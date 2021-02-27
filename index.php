@@ -1,6 +1,35 @@
 <?php
 
-echo 'lol';
+header('Content-TYPE: application/json');
+
+if(empty($_GET['api_key'])){
+    echo 'Error!';exit();
+}
+
+$dbh = new PDO('mysql:host=db;dbname=artur_shop','artur_base','artur_pwd');
+
+$sql ="SELECT * FROM `tabs` WHERE `api_key` = :api_key";
+$stmt = $dbh->prepare($sql);
+$stmt->execute(['api_key' => $_GET['api_key']]);
+
+/*$stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+$pdoExec = $stmt->execute(['id' => $_GET['api_key']]);
+
+$pdoExec = $stmt->execute();*/
+
+$result = $stmt->fetchAll();
+
+if($result){
+    $result = [
+      'id' => $result['id'],
+      'login' => $result['name'],
+      'money' => $result['name'],
+    ];
+    echo json_encode($result);
+}
+else{
+    echo 'Error!'; exit();
+}
 
 
 
